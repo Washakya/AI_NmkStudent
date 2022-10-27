@@ -11,4 +11,4 @@ auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
-api.updatestatus("環境変数てすと")
+api.update_status("環境変数てすと")
