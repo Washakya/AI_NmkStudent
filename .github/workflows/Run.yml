@@ -22,7 +22,7 @@ jobs:
         run: pip install mecab-python3
       - name: Get Python version
         run: python -V
-      #- name: Install dependencies
-      #  run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
       - name: Run Python
         run: python Run.py
