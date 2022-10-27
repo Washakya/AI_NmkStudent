@@ -19,7 +19,7 @@ jobs:
           python-version: '3.9.10'
           architecture: 'x64'
       - name: test
-        run: echo ${{ env.API_KEY }}
+        run: echo $API_KEY
       - name: Install dependencies
         run: pip install mecab-python3
       - name: Get Python version
