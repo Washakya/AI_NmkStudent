@@ -24,5 +24,3 @@ jobs:
             API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
             ACCESS_TOKEN: ${{secrets.ACCESS_TOKEN}}
             ACCESS_TOKEN_SECRET: ${{secrets.ACCESS_TOKEN_SECRET}}
-      - name: Run Python
-        run: python Run.py
