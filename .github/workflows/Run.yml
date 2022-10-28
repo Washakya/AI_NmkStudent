@@ -18,8 +18,6 @@ jobs:
             API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
             ACCESS_TOKEN: ${{secrets.ACCESS_TOKEN}}
             ACCESS_TOKEN_SECRET: ${{secrets.ACCESS_TOKEN_SECRET}}
-      - name: test
-        run: echo $API_KEY
       - name: Install dependencies
         run: pip install mecab-python3
       - name: Get Python version
