@@ -13,6 +13,6 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 def NowTime():
-    return "since:" + datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9), 'JST')).strftime('%Y-%m-%d_%H:%M:%S')
+    return datetime.datetime.now.strftime('%Y-%m-%d_%H:%M:%S')
 
-api.update_status((NowTime()))
+api.update_status(NowTime())
