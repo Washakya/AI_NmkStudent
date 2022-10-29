@@ -48,12 +48,15 @@ SplittedTweets = ""
 mecab = MeCab.Tagger("-Owakati")
 for s in tweets:
     SplittedTweets += mecab.parse(s)
+  
+BlacList = ["匿名質問","咲太郎","飯田清"]
 
 #各種記号・文字の削除
-SplittedTweets = re.sub(r"匿名質問募集中|咲太郎|飯田清","", SplittedTweets)
-SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～・]", '', SplittedTweets)
-SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
-SplittedTweets = re.sub(r"\u3000", "", SplittedTweets)
+for w in BlackList:
+    SplittedTweets = re.sub(r,"", SplittedTweets)
+SplittedTweets = re.sub("[|（|）|「|」|『|』|｛|｝|【|】|”|||’|！|？|～|・|]|"|,| |"|", SplittedTweets)
+SplittedTweets = re.sub("[|(|)|\|[|\|]|{|}|\|'|\|"|~|-]", "", SplittedTweets)
+SplittedTweets = re.sub("\u3000", "", SplittedTweets)
 
 #絵文字の削除
 SplittedTweets = demoji.replace(string=SplittedTweets, repl="")
