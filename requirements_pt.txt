@@ -1,0 +1,4 @@
+mecab
+tweepy
+demoji
+markovify
