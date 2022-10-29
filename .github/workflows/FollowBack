@@ -1,0 +1,28 @@
+name: FollowBack
+
+on:
+  workflow_dispatch:
+
+jobs:
+  FollowBack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.10'
+          architecture: 'x64'
+      - name: Get Python version
+        run: python -V
+      - name: Install dependencies
+        run: pip install -r requirements_fb.txt
+      - name: Migrations
+        run: python FollowBack.py migrate
+        env:
+            API_KEY: ${{secrets.API_KEY}}
+            API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
+            ACCESS_TOKEN_S: ${{secrets.ACCESS_TOKEN_S}}
+            ACCESS_TOKEN_SECRET_S: ${{secrets.ACCESS_TOKEN_SECRET_S}}
+            ACCESS_TOKEN_P: ${{secrets.ACCESS_TOKEN_P}}
+            ACCESS_TOKEN_SECRET_P: ${{secrets.ACCESS_TOKEN_SECRET_P}}
