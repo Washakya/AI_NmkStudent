@@ -3,6 +3,7 @@ import os
 import tweepy
 import datetime
 import random
+import time
 
 #各種キーの取得
 API_KEY = os.environ.get("API_KEY")
@@ -41,7 +42,7 @@ while flg:
             print(t.text)
         #クッソ寒いギャグを返信するやつ
         else:
-            api_P.update_status(status="@"+t.user.screen_name+" "+"何の用だい？隋の皇帝の煬帝", in_reply_to_status_id = t.id)
+            api_P.update_status(status="@"+t.user.screen_name+" "+"一理ある", in_reply_to_status_id = t.id)
             lastID = t.id
             print(t.text)
     #クールタイム
