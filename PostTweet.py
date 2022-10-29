@@ -20,10 +20,6 @@ auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN_S, ACCESS_TOKEN_SECRET_S)
 api_S = tweepy.API(auth, wait_on_rate_limit=True)
 
-#APIの認証オブジェクト作成(投稿用)
-auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
-api_P = tweepy.API(auth, wait_on_rate_limit=True)
-
 #ツイートのリストを入れておくやつ
 tweets = []
 
@@ -50,10 +46,12 @@ for s in tweets:
     SplittedTweets += mecab.parse(s)
   
 BlackList = ["匿名質問","咲太郎","飯田清"]
+print(SplittedTweets)
+
 
 #各種記号・文字の削除
 for w in BlackList:
-    SplittedTweets = re.sub(t, "", SplittedTweets)
+    SplittedTweets = re.sub(w, "", SplittedTweets)
 SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～・]", '', SplittedTweets)
 SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
@@ -71,6 +69,10 @@ sentence = text_model.make_sentence(tries=random.randint(10,100))
 sentence = "".join(sentence.split())
 
 print(sentence)
+
+#APIの認証オブジェクト作成(投稿用)
+auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
+api_P = tweepy.API(auth, wait_on_rate_limit=True)
 
 #ツイート送信
 api_P.update_status(sentence)
