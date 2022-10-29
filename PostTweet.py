@@ -43,8 +43,11 @@ SplittedTweets = ""
 mecab = MeCab.Tagger("-Owakati")
 for s in tweets:
     SplittedTweets += mecab.parse(s)
-  
-BlackList = ["匿名質問","咲太郎","飯田清"]
+
+#単語ブラックリスト読み込み
+with open("BlackList.txt", encoding="utf-8") as f:
+    lines = f.readlines()
+BlackList = [line.rstrip('\n') for line in lines]
 
 #各種記号・文字の削除
 for w in BlackList:
