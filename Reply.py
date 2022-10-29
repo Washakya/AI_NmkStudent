@@ -1,4 +1,4 @@
-#でばっぐだよ
+#まだまだかいはつちゅう
 import os
 import tweepy
 import datetime
