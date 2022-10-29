@@ -1,10 +1,10 @@
-name: Running
+name: Reply
 
 on:
   workflow_dispatch:
 
 jobs:
-  Running:
+  Reply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,9 +16,9 @@ jobs:
       - name: Get Python version
         run: python -V
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements_r.txt
       - name: Migrations
-        run: python Run.py migrate
+        run: python Reply.py migrate
         env:
             API_KEY: ${{secrets.API_KEY}}
             API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
