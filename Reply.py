@@ -40,7 +40,7 @@ while flg:
             api_P.update_status(status="@"+t.user.screen_name+" "+kuji[random.randint(0,5)], in_reply_to_status_id = t.id)
             lastID = t.id
             print(t.text)
-        #クッソ寒いギャグを返信するやつ
+        #クッソうざい返信
         else:
             api_P.update_status(status="@"+t.user.screen_name+" "+"一理ある", in_reply_to_status_id = t.id)
             lastID = t.id
