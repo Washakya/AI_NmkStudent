@@ -18,17 +18,21 @@ ACCESS_TOKEN_SECRET_P = os.environ.get("ACCESS_TOKEN_SECRET_P")
 #APIの認証オブジェクト作成(収集用)
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN_S, ACCESS_TOKEN_SECRET_S)
-api = tweepy.API(auth, wait_on_rate_limit=True)
+api_S = tweepy.API(auth, wait_on_rate_limit=True)
+
+#APIの認証オブジェクト作成(投稿用)
+auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
+api_P = tweepy.API(auth, wait_on_rate_limit=True)
 
 #ツイートのリストを入れておくやつ
 tweets = []
 
 #フォロー中のアカウント取得
-following = api.get_friends(screen_name = "AI_GetTweetsMys")
+following = api_S.get_friends(screen_name = "AI_GetTweetsMys")
 
 for u in following:
     #それぞれのアカウントから最新の200ツイートを取得
-    for t in api.user_timeline(screen_name = u.screen_name, count = 200):
+    for t in api_S.user_timeline(screen_name = u.screen_name, count = 200):
         #RT・メンション・リプを除外
         if not "@" in t.text and not "RT" in t.text and t.in_reply_to_status_id == None:
             #リンク付きツイートはリンクを削除
@@ -63,11 +67,7 @@ sentence = text_model.make_sentence(tries=random.randint(10,100))
 #分かち書きの単語間スペースを消す
 sentence = "".join(sentence.split())
 
-#APIの認証オブジェクト作成(投稿用)
-auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
-api = tweepy.API(auth, wait_on_rate_limit=True)
-
 print(sentence)
 
 #ツイート送信
-api.update_status(sentence)
+api_P.update_status(sentence)
