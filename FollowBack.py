@@ -1,4 +1,5 @@
 #モジュールのインポート
+import os
 import tweepy
 
 #APIのセットアップ
