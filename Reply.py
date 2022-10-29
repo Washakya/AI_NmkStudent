@@ -5,8 +5,8 @@ import datetime
 
 API_KEY = os.environ.get("API_KEY")
 API_KEY_SECRET = os.environ.get("API_KEY_SECRET")
-ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN")
-ACCESS_TOKEN_SECRET = os.environ.get("ACCESS_TOKEN_SECRET")
+ACCESS_TOKEN_P = os.environ.get("ACCESS_TOKEN_P")
+ACCESS_TOKEN_SECRET_P = os.environ.get("ACCESS_TOKEN_SECRET_P")
 
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
