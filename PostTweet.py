@@ -53,8 +53,8 @@ BlacList = ["匿名質問","咲太郎","飯田清"]
 
 #各種記号・文字の削除
 for w in BlackList:
-    SplittedTweets = re.sub(r,"", SplittedTweets)
-SplittedTweets = re.sub("[|（|）|「|」|『|』|｛|｝|【|】|”|||’|！|？|～|・|]|"|,| |"|", SplittedTweets)
+    SplittedTweets = re.sub(t, "", SplittedTweets)
+SplittedTweets = re.sub("[|（|）|「|」|『|』|｛|｝|【|】|”|||’|！|？|～|・|]|"|,| |"|", "", SplittedTweets)
 SplittedTweets = re.sub("[|(|)|\|[|\|]|{|}|\|'|\|"|~|-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
 
