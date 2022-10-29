@@ -2,7 +2,6 @@
 import tweepy
 import MeCab
 import markovify
-import demoji
 import re
 import random
 import os
@@ -46,8 +45,6 @@ for s in tweets:
     SplittedTweets += mecab.parse(s)
   
 BlackList = ["匿名質問","咲太郎","飯田清"]
-print(SplittedTweets)
-
 
 #各種記号・文字の削除
 for w in BlackList:
@@ -55,9 +52,6 @@ for w in BlackList:
 SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～・]", '', SplittedTweets)
 SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
-
-#絵文字の削除
-SplittedTweets = demoji.replace(string=SplittedTweets, repl="")
 
 #AIモデル作成(精度2)
 text_model = markovify.NewlineText(SplittedTweets, state_size=2, well_formed=False)
