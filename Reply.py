@@ -16,6 +16,23 @@ auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
 api_P = tweepy.API(auth)
 
+#各終了時刻
+StopTime = [0,4,8,12,16,20]
+
+#終了時刻リストから現在時刻を削除
+if datetime.datetime.now().hour == 23:
+    StopTime.remove(0)
+    StartTime = 0
+else:
+    StopTime.remove(datetime.datetime.now().hour + 1)
+    StartTime = datetime.datetime.now().hour + 1
+
+#実行時刻になるまで待つ
+while True:
+    if StartTime == datetime.datetime.now().hour:
+        break
+
+
 #最後のメンションを取得
 lastID = api_P.mentions_timeline()[0].id
 
@@ -26,7 +43,7 @@ kuji = ["凶","末吉","小吉","中吉","吉","大吉"]
 flg = True
 
 #停止と言うまで繰り返し
-while flg:
+while flg or datetime.datetime.now().hour in StopTime:
     #最新のメンションを取得
     results = api_P.mentions_timeline(since_id=lastID)
     for t in results:
