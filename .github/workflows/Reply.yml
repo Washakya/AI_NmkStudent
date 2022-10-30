@@ -33,3 +33,9 @@ jobs:
             ACCESS_TOKEN_SECRET_S: ${{secrets.ACCESS_TOKEN_SECRET_S}}
             ACCESS_TOKEN_P: ${{secrets.ACCESS_TOKEN_P}}
             ACCESS_TOKEN_SECRET_P: ${{secrets.ACCESS_TOKEN_SECRET_P}}
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "ステータス更新" -a
