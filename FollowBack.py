@@ -22,7 +22,10 @@ following = api_P.get_friend_ids(screen_name = "AI_NmkStudent")
 #フォロバチェック・フォロバ
 for u in followers:
     if not u in following:
-        api_P.create_friendship(user_id = u)
+        try:
+            api_P.create_friendship(user_id = u)
+        except Exception:
+            pass
 
 #りむーぶ^^
 for u in following:
