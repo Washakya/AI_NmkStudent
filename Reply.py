@@ -49,7 +49,7 @@ while True:
         break
 
 #停止と言うまで繰り返し
-while flg or datetime.datetime.now() == (StartTime + 4) % 24:
+while flg or datetime.datetime.now().hour == (StartTime + 4) % 24:
     #最新のメンションを取得
     results = api_P.mentions_timeline(since_id=lastID)
     for t in results:
