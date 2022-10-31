@@ -19,7 +19,7 @@ jobs:
         run: python -V
       - name: Install dependencies
         run: pip install -r requirements_fb.txt
-      - name: Migrations
+      - name: Run Python
         run: python FollowBack.py migrate
         env:
             API_KEY: ${{secrets.API_KEY}}
