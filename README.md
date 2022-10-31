@@ -5,3 +5,8 @@
 AI並木生([@AI_NmkStudent](https://twitter.com/AI_NmkStudent))
 
 学習用([@AI_GetTweetsMys](https://twitter.com/AI_GetTweetsMys))
+
+## 使用言語
+Python
+
+## おやくそく
