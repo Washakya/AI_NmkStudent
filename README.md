@@ -3,10 +3,11 @@
 並木生のツイートから学習・文章生成をし、AIの並木生を作ろうという試み
 
 AI並木生([@AI_NmkStudent](https://twitter.com/AI_NmkStudent))
-
 学習用([@AI_GetTweetsMys](https://twitter.com/AI_GetTweetsMys))
 
 ## 使用言語
 Python
 
-## おやくそく
+## 約束事項
+・学習用アカウントのフォローから外れたアカウントから学習することはありません。
+・
