@@ -121,13 +121,11 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
         elif "おみくじ" in t.text:
             api_P.update_status(status="@"+t.user.screen_name+" "+mikuji(), in_reply_to_status_id = t.id)
             lastID = t.id
-            print(t.text)
         
         #クッソうざい返信
         else:
             api_P.update_status(status="@"+t.user.screen_name+" "+reply(), in_reply_to_status_id = t.id)
             lastID = t.id
-            print(t.text)
 
     #クールタイム
     time.sleep(60)
