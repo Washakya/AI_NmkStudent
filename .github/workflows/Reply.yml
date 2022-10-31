@@ -22,6 +22,15 @@ jobs:
           architecture: 'x64'
       - name: Get Python version
         run: python -V
+      - name: Install packages
+        run: sudo apt-get install -y mecab libmecab-dev mecab-ipadic-utf8
+      - name: Get MeCab dictionary
+        run: git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
+      - name: Setup MeCab dictionary
+        run: ./bin/install-mecab-ipadic-neologd -n -y
+        working-directory: ./mecab-ipadic-neologd
+      - name: Setup MeCab configure
+        run: echo dicdir = `mecab-config --dicdir`"/mecab-ipadic-neologd" > mecabrc && sudo cp mecabrc /usr/local/etc/
       - name: Install dependencies
         run: pip install -r requirements_r.txt
       - name: Migrations
