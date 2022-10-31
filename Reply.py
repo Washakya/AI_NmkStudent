@@ -65,7 +65,6 @@ def mikuji():
 
 #返信を生成
 def reply():
-    #モデル生成
     text_model = markovify.NewlineText(SplittedTweets, state_size=2, well_formed=False)
     #文章作成(10文字から60文字)
     sentence = text_model.make_sentence(tries=random.randint(10,60))
@@ -73,7 +72,7 @@ def reply():
     sentence = "".join(sentence.split())
     return sentence
 
-#認証オブジェクトの作成(返信用)
+#認証オブジェクトの作成
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
 api_P = tweepy.API(auth)
@@ -99,13 +98,17 @@ StartTime = (math.floor(datetime.datetime.now().hour / 4) * 4 + 4) % 24
 #実行時刻になるまで待つ
 while True:
     if StartTime == datetime.datetime.now().hour:
+        print("始動at" +str(StartTime) + ":00")
         break
 
-#停止と言うor時間になるまで繰り返し
+#停止と言うまで繰り返し
 while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
+
     #最新のメンションを取得
     results = api_P.mentions_timeline(since_id=lastID)
+
     for t in results:
+
         #停止するやつ
         if "停止" in t.text and t.user.screen_name == "Moyashi_Utteru":
             api_P.update_status(status="@"+t.user.screen_name+" "+"停止しました", in_reply_to_status_id = t.id)
@@ -113,17 +116,21 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
             with open("ReplyStatus.txt",mode="w",encoding="utf-8") as f:
                 f.write("停止中\n")
             break
+
         #おみくじ返信するやつ
         elif "おみくじ" in t.text:
             api_P.update_status(status="@"+t.user.screen_name+" "+mikuji(), in_reply_to_status_id = t.id)
             lastID = t.id
             print(t.text)
+        
         #クッソうざい返信
         else:
             api_P.update_status(status="@"+t.user.screen_name+" "+reply(), in_reply_to_status_id = t.id)
             lastID = t.id
             print(t.text)
+
     #クールタイム
     time.sleep(60)
+
 #終了通知
-print("停止")
+print("停止at" + str(StartTime + 4) + ":00")
