@@ -40,8 +40,7 @@ else:
     flg = False
 
 #開始時間の取得
-times = [4,8,12,16,20,0]
-StartTime = times[math.floor(datetime.datetime.now().hour / 4)]
+StartTime = (math.floor(datetime.datetime.now().hour / 4) * 4 + 4) % 24
 
 #実行時刻になるまで待つ
 while True:
