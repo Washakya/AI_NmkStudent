@@ -52,9 +52,11 @@ BlackList = [line.rstrip('\n') for line in lines]
 #各種記号・文字の削除
 for w in BlackList:
     SplittedTweets = re.sub(w, "", SplittedTweets)
-SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～・]", '', SplittedTweets)
+SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～・]", "", SplittedTweets)
 SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
+
+print(SplittedTweets)
 
 #おみくじの中身を設定
 kuji = ["凶","末吉","小吉","中吉","吉","大吉","https://ja.wikipedia.org/wiki/おみくじ"]
@@ -95,6 +97,9 @@ else:
 #開始時間の取得
 StartTime = (math.floor(datetime.datetime.now().hour / 4) * 4 + 4) % 24
 
+#回答済みリストの作成(バグ防止)
+answered = []
+
 #実行時刻になるまで待つ
 while True:
     if StartTime == datetime.datetime.now().hour:
@@ -108,27 +113,28 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
     results = api_P.mentions_timeline(since_id=lastID)
 
     for t in results:
+        if not t.id in answered:
+            #停止するやつ
+            if "停止" in t.text and t.user.screen_name == "Moyashi_Utteru":
+                api_P.update_status(status="@"+t.user.screen_name+" "+"停止しました", in_reply_to_status_id = t.id)
+                flg = False
+                with open("ReplyStatus.txt",mode="w",encoding="utf-8") as f:
+                    f.write("停止中\n")
+                break
 
-        #停止するやつ
-        if "停止" in t.text and t.user.screen_name == "Moyashi_Utteru":
-            api_P.update_status(status="@"+t.user.screen_name+" "+"停止しました", in_reply_to_status_id = t.id)
-            flg = False
-            with open("ReplyStatus.txt",mode="w",encoding="utf-8") as f:
-                f.write("停止中\n")
-            break
-
-        #おみくじ返信するやつ
-        elif "おみくじ" in t.text:
-            api_P.update_status(status="@"+t.user.screen_name+" "+mikuji(), in_reply_to_status_id = t.id)
-            lastID = t.id
-        
-        #クッソうざい返信
-        else:
-            api_P.update_status(status="@"+t.user.screen_name+" "+reply(), in_reply_to_status_id = t.id)
-            lastID = t.id
-
+            #おみくじ返信するやつ
+            elif "おみくじ" in t.text:
+                api_P.update_status(status="@"+t.user.screen_name+" "+mikuji(), in_reply_to_status_id = t.id)
+                answered.append(t.id)
+                lastID = t.id
+            
+            #クッソうざい返信
+            else:
+                api_P.update_status(status="@"+t.user.screen_name+" "+reply(), in_reply_to_status_id = t.id)
+                answered.append(t.id)
+                lastID = t.id
     #クールタイム
-    time.sleep(60)
+    time.sleep(5)
 
 #終了通知
 print("停止at" + str(StartTime + 4) + ":00")
