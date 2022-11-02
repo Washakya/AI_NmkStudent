@@ -139,13 +139,13 @@ print("準備完了")
 
 #debug
 print(reply())
-"""
+
 #実行時刻になるまで待つ
 while True:
     if StartTime == datetime.datetime.now().hour:
         print("始動at" +str(StartTime) + ":00")
         break
-
+"""
 #停止と言うまで繰り返し
 while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
 
