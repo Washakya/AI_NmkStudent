@@ -26,15 +26,56 @@ api_S = tweepy.API(auth)
 tweets = []
 
 #フォロー中のアカウント取得
-following = api_S.get_friends(screen_name = "AI_GetTweetsMys")
+following = api_S.get_friend_ids(screen_name = "AI_GetTweetsMys")
 
 for u in following:
     #それぞれのアカウントから最新の200ツイートを取得
-    for t in api_S.user_timeline(screen_name = u.screen_name, count = 200):
+    for t in api_S.user_timeline(user_id = u, count = 200):
         #本人以外へのリプを取得
         if not t.in_reply_to_status_id == None and not t.in_reply_to_screen_name == t.user.screen_name:
             #リンク付きツイートはリンク・メンションを削除
             tweets.append(t.text.strip(re.search(r'@(.+) ',t.text).group(0)).partition("http")[0])
+
+#ツイートを一文にしたやつを入れるやつ
+OneSentenceTweets = ""
+
+#ツイートリストを一文化
+for t in tweets:
+    OneSentenceTweets += t
+
+#人名を入れとくリスト
+HumanName = []
+
+#人名の取得
+mecab = MeCab.Tagger("-Ochasen")
+node = mecab.parseToNode(OneSentenceTweets).next
+while node:
+    nodeFeature = node.feature.split(",")
+    if nodeFeature[0] == "名詞" and nodeFeature[1] == "固有名詞" and nodeFeature[2] == "人名":
+        HumanName.append(node.surface)
+    node = node.next
+
+#単語ブラックリスト読み込み
+with open("BlackList.txt", encoding="utf-8") as f:
+    lines = f.readlines()
+    BlackList = [line.rstrip('\n') for line in lines]
+
+#人名リストをブラックリストに追加
+BlackList.extend(set(HumanName))
+
+#ブラックリストの単語を含むツイートを削除
+for w in BlackList:
+    tweets = ([t for t in tweets if not w in t])
+
+#単語削除リスト読み込み
+with open("DeleteList.txt", encoding="utf-8") as f:
+    lines = f.readlines()
+    DeleteList = [line.rstrip('\n') for line in lines]
+
+#単語削除リストに含まれる単語を部分削除
+for w in DeleteList:
+    for t in tweets:
+        tweets[tweets.index(t)] = re.sub(w, "", t)
 
 #生成中の文字を入れておくやつ
 SplittedTweets = ""
@@ -44,19 +85,12 @@ mecab = MeCab.Tagger("-Owakati")
 for s in tweets:
     SplittedTweets += mecab.parse(s)
 
-#単語ブラックリスト読み込み
-with open("BlackList.txt", encoding="utf-8") as f:
-    lines = f.readlines()
-BlackList = [line.rstrip('\n') for line in lines]
-
 #各種記号・文字の削除
 for w in BlackList:
     SplittedTweets = re.sub(w, "", SplittedTweets)
 SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～・]", "", SplittedTweets)
 SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
-
-print(SplittedTweets)
 
 #おみくじの中身を設定
 kuji = ["凶","末吉","小吉","中吉","吉","大吉","https://ja.wikipedia.org/wiki/おみくじ"]
@@ -68,8 +102,8 @@ def mikuji():
 #返信を生成
 def reply():
     text_model = markovify.NewlineText(SplittedTweets, state_size=2, well_formed=False)
-    #文章作成(10文字から60文字)
-    sentence = text_model.make_sentence(tries=random.randint(10,60))
+    #文章作成(10文字から30文字)
+    sentence = text_model.make_sentence(tries=random.randint(10,30))
     #分かち書きの単語間スペースを消す
     sentence = "".join(sentence.split())
     return sentence
@@ -99,6 +133,9 @@ StartTime = (math.floor(datetime.datetime.now().hour / 4) * 4 + 4) % 24
 
 #回答済みリストの作成(バグ防止)
 answered = []
+
+#準備完了
+print("準備完了")
 
 #実行時刻になるまで待つ
 while True:
@@ -134,7 +171,7 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
                 answered.append(t.id)
                 lastID = t.id
     #クールタイム
-    time.sleep(5)
+    time.sleep(15)
 
 #終了通知
 print("停止at" + str(StartTime + 4) + ":00")
