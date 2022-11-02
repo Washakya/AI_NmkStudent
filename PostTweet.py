@@ -55,7 +55,7 @@ while node:
 #単語ブラックリスト読み込み
 with open("BlackList.txt", encoding="utf-8") as f:
     lines = f.readlines()
-    BlackList = [line.rstrip('\n') for line in lines]
+    BlackList = [line.rstrip("\n") for line in lines]
 
 #人名リストをブラックリストに追加
 BlackList.extend(set(HumanName))
@@ -67,7 +67,7 @@ for w in BlackList:
 #単語削除リスト読み込み
 with open("DeleteList.txt", encoding="utf-8") as f:
     lines = f.readlines()
-    DeleteList = [line.rstrip('\n') for line in lines]
+    DeleteList = [line.rstrip("\n") for line in lines]
 
 #単語削除リストに含まれる単語を部分削除
 for w in DeleteList:
