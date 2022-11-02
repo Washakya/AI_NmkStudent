@@ -145,7 +145,7 @@ while True:
     if StartTime == datetime.datetime.now().hour:
         print("始動at" +str(StartTime) + ":00")
         break
-"""
+
 #停止と言うまで繰り返し
 while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
 
@@ -178,4 +178,4 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
 
 #終了通知
 print("停止at" + str(StartTime + 4) + ":00")
-"""
+
