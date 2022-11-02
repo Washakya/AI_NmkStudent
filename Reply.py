@@ -137,6 +137,9 @@ answered = []
 #準備完了
 print("準備完了")
 
+#debug
+print(reply())
+"""
 #実行時刻になるまで待つ
 while True:
     if StartTime == datetime.datetime.now().hour:
@@ -175,3 +178,4 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
 
 #終了通知
 print("停止at" + str(StartTime + 4) + ":00")
+"""
