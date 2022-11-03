@@ -92,20 +92,38 @@ SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～�
 SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
 
-#おみくじの中身を設定
-kuji = ["凶","末吉","小吉","中吉","吉","大吉","https://ja.wikipedia.org/wiki/おみくじ"]
-
-#おみくじの結果を返す
+#おみくじ
 def mikuji():
+    #おみくじの中身を設定
+    kuji = ["凶","末吉","小吉","中吉","吉","大吉","https://ja.wikipedia.org/wiki/おみくじ"]
+    #結果を返す
     return kuji[random.randint(0,6)]
 
-#返信を生成
+#ラッキーアイテム
+def LuckyItem():
+    #アイテムを入れとくリスト
+    items = []
+    #名詞(人名を除く)の取得
+    node = mecab.parseToNode(OneSentenceTweets).next
+    #名詞のみを取り出す
+    while node:
+        nodeFeature = node.feature.split(",")
+        if nodeFeature[0] == "名詞" and nodeFeature[1] == "一般" or nodeFeature[1] == "固有名詞" and not node.surface in BlackList:
+            items.append(node.surface)
+        node = node.next
+    #重複を削除
+    items = list(set(items))
+    #結果を返す
+    return items[random.randint(0,len(items)-1)]
+
+#AI返信
 def reply():
     text_model = markovify.NewlineText(SplittedTweets, state_size=2, well_formed=False)
     #文章作成(10文字から30文字)
     sentence = text_model.make_sentence(tries=random.randint(10,30))
     #分かち書きの単語間スペースを消す
     sentence = "".join(sentence.split())
+    #結果を返す
     return sentence
 
 #認証オブジェクトの作成
@@ -137,9 +155,6 @@ answered = []
 #準備完了
 print("準備完了")
 
-#debug
-print(reply())
-
 #実行時刻になるまで待つ
 while True:
     if StartTime == datetime.datetime.now().hour:
@@ -162,9 +177,15 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
                     f.write("停止中\n")
                 break
 
-            #おみくじ返信するやつ
+            #おみくじ
             elif "おみくじ" in t.text:
                 api_P.update_status(status="@"+t.user.screen_name+" "+mikuji(), in_reply_to_status_id = t.id)
+                answered.append(t.id)
+                lastID = t.id
+
+            #ラッキーアイテム
+            elif "ラッキーアイテム" in t.text:
+                api_P.update_status(status="@"+t.user.screen_name+" "+LuckyItem(), in_reply_to_status_id = t.id)
                 answered.append(t.id)
                 lastID = t.id
             
@@ -178,4 +199,3 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
 
 #終了通知
 print("停止at" + str(StartTime + 4) + ":00")
-
