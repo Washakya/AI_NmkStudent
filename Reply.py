@@ -1,13 +1,14 @@
 #モジュールのインポート
-import os
 import tweepy
+import MeCab
+import markovify
+import requests
+import json
 import time
 import random
 import datetime
 import math
 import re
-import MeCab
-import markovify
 
 #各種キーの取得
 API_KEY = os.environ.get("API_KEY")
@@ -126,6 +127,37 @@ def reply():
     #結果を返す
     return sentence
 
+def weather(day = 0):
+    # 気象庁データの取得
+    jma_json = requests.get("https://www.jma.go.jp/bosai/forecast/data/forecast/080000.json").json()
+
+    #降水確率の取得
+    RainyPercent = jma_json[0]["timeSeries"][1]["areas"][1]["pops"]
+    #リストの空欄に-を置く
+    for i in range(8-len(RainyPercent)):
+        RainyPercent.insert(0,"-")
+
+    #最高気温と最低気温の取得
+    MaxAndMin = jma_json[0]["timeSeries"][2]["areas"][1]["temps"]
+    #リストの空欄に-を置く
+    for i in range(4-len(MaxAndMin)):
+        MaxAndMin.insert(0,"-")
+
+    #天気のデータを取得
+    DayWeather = jma_json[0]["timeSeries"][0]["areas"][1]["weathers"][day]
+    # 全角スペースの削除
+    DayWeather = DayWeather.replace("\u3000", "")
+
+    #日にちの取得
+    date = jma_json[0]["timeSeries"][0]["timeDefines"][day][:10]
+    if day == 1:
+        date = "明日 "+date[0:4]+"年"+date[5:7]+"月"+date[8:10]+"日"+" の予報\n"
+    else:
+        date = "今日 "+date[0:4]+"年"+date[5:7]+"月"+date[8:10]+"日"+" の予報\n"
+
+    #文章にまとめて返す
+    return date + "【天気】"+DayWeather+"\n【降水確率】"+RainyPercent[day*4]+"/"+RainyPercent[day*4+1]+"/"+RainyPercent[day*4+2]+"/"+RainyPercent[day*4+3]+"%\n【気温】Max:"+MaxAndMin[day*2]+"℃/Min:" + MaxAndMin[day*2+1]+"℃\n\n気象庁より"
+
 #認証オブジェクトの作成
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 auth.set_access_token(ACCESS_TOKEN_P, ACCESS_TOKEN_SECRET_P)
@@ -176,6 +208,15 @@ while flg and not datetime.datetime.now().hour == (StartTime + 4) % 24:
                 with open("ReplyStatus.txt",mode="w",encoding="utf-8") as f:
                     f.write("停止中\n")
                 break
+
+            #天気
+            elif "天気" in t.text:
+                if "明日" in t.text:
+                    api_P.update_status(status="@"+t.user.screen_name+" "+weather(1), in_reply_to_status_id = t.id)
+                else:
+                    api_P.update_status(status="@"+t.user.screen_name+" "+weather(0), in_reply_to_status_id = t.id)
+                answered.append(t.id)
+                lastID = t.id
 
             #おみくじ
             elif "おみくじ" in t.text:
