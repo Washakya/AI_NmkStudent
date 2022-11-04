@@ -2,6 +2,7 @@
 import tweepy
 import MeCab
 import markovify
+import os
 import requests
 import json
 import time
