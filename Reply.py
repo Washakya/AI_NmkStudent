@@ -125,7 +125,6 @@ def weather(day = 0):
 
     #最高気温と最低気温の取得
     MaxAndMin = jma_json[0]["timeSeries"][2]["areas"][1]["temps"]
-
     #リストの空欄に-を置く
     for i in range(4-len(MaxAndMin)):
         MaxAndMin.insert(0,"-")
@@ -143,7 +142,6 @@ def weather(day = 0):
 
     #文章にまとめて返す
     return date_r + DayWeather_r + RainyPercent_r + MaxAndMin_r +"\n気象庁より"
-print(weather(0))
 
 #おみくじ
 def mikuji():
