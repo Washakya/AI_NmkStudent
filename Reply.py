@@ -106,6 +106,45 @@ SplittedTweets = re.sub(r"[（）「」『』｛｝【】＠”’！？｜～�
 SplittedTweets = re.sub(r"[()\[\]{}\'\"|~-]", "", SplittedTweets)
 SplittedTweets = re.sub("\u3000", "", SplittedTweets)
 
+def weather(day = 0):
+    # 気象庁データの取得
+    jma_json = requests.get("https://www.jma.go.jp/bosai/forecast/data/forecast/080000.json").json()
+
+    #天気のデータを取得
+    DayWeather = jma_json[0]["timeSeries"][0]["areas"][1]["weathers"][day]
+    # 全角スペースの削除
+    DayWeather = DayWeather.replace("\u3000", "")
+    DayWeather_r = "【天気】"+DayWeather+"\n"
+
+    #降水確率の取得
+    RainyPercent = jma_json[0]["timeSeries"][1]["areas"][1]["pops"]
+    #リストの空欄に-を置く
+    for i in range(8-len(RainyPercent)):
+        RainyPercent.insert(0,"-")
+    RainyPercent_r = "【降水確率】"+RainyPercent[day*4]+"/"+RainyPercent[day*4+1]+"/"+RainyPercent[day*4+2]+"/"+RainyPercent[day*4+3]+"%\n"
+
+    #最高気温と最低気温の取得
+    MaxAndMin = jma_json[0]["timeSeries"][2]["areas"][1]["temps"]
+
+    #リストの空欄に-を置く
+    for i in range(4-len(MaxAndMin)):
+        MaxAndMin.insert(0,"-")
+    #MinとMaxが同値な謎バグ防止
+    if MaxAndMin[day*2] == MaxAndMin[day*2 + 1]:
+        MaxAndMin[day*2] = "-"
+    MaxAndMin_r = "【気温】Min:"+MaxAndMin[day*2]+"℃/Max:" + MaxAndMin[day*2+1]+"℃\n"
+
+    #日にちの取得
+    date = jma_json[0]["timeSeries"][0]["timeDefines"][day][:10]
+    if day == 1:
+        date_r = "明日 "+date[0:4]+"年"+date[5:7]+"月"+date[8:10]+"日"+" の予報\n"
+    else:
+        date_r = "今日 "+date[0:4]+"年"+date[5:7]+"月"+date[8:10]+"日"+" の予報\n"
+
+    #文章にまとめて返す
+    return date_r + DayWeather_r + RainyPercent_r + MaxAndMin_r +"\n気象庁より"
+print(weather(0))
+
 #おみくじ
 def mikuji():
     #おみくじの中身を設定
@@ -139,37 +178,6 @@ def reply():
     sentence = "".join(sentence.split())
     #結果を返す
     return sentence
-
-def weather(day = 0):
-    # 気象庁データの取得
-    jma_json = requests.get("https://www.jma.go.jp/bosai/forecast/data/forecast/080000.json").json()
-
-    #降水確率の取得
-    RainyPercent = jma_json[0]["timeSeries"][1]["areas"][1]["pops"]
-    #リストの空欄に-を置く
-    for i in range(8-len(RainyPercent)):
-        RainyPercent.insert(0,"-")
-
-    #最高気温と最低気温の取得
-    MaxAndMin = jma_json[0]["timeSeries"][2]["areas"][1]["temps"]
-    #リストの空欄に-を置く
-    for i in range(4-len(MaxAndMin)):
-        MaxAndMin.insert(0,"-")
-
-    #天気のデータを取得
-    DayWeather = jma_json[0]["timeSeries"][0]["areas"][1]["weathers"][day]
-    # 全角スペースの削除
-    DayWeather = DayWeather.replace("\u3000", "")
-
-    #日にちの取得
-    date = jma_json[0]["timeSeries"][0]["timeDefines"][day][:10]
-    if day == 1:
-        date = "明日 "+date[0:4]+"年"+date[5:7]+"月"+date[8:10]+"日"+" の予報\n"
-    else:
-        date = "今日 "+date[0:4]+"年"+date[5:7]+"月"+date[8:10]+"日"+" の予報\n"
-
-    #文章にまとめて返す
-    return date + "【天気】"+DayWeather+"\n【降水確率】"+RainyPercent[day*4]+"/"+RainyPercent[day*4+1]+"/"+RainyPercent[day*4+2]+"/"+RainyPercent[day*4+3]+"%\n【気温】Max:"+MaxAndMin[day*2]+"℃/Min:" + MaxAndMin[day*2+1]+"℃\n\n気象庁より"
 
 #認証オブジェクトの作成
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
