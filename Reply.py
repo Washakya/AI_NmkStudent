@@ -30,9 +30,21 @@ tweets = []
 #フォロー中のアカウント取得
 following = api_S.get_friend_ids(screen_name = "AI_GetTweetsMys")
 
+#それぞれのアカウントから最新の200ツイートを取得
 for u in following:
-    #それぞれのアカウントから最新の200ツイートを取得
-    for t in api_S.user_timeline(user_id = u, count = 200):
+    #ユーザーごとのツイートを入れておくやつ
+    UserTweet = []
+    #ユーザーごとに200ずつツイート取得
+    while UserTweet == []:
+        #取得
+        try:
+            UserTweet = api_S.user_timeline(user_id = u, count = 200)
+            break
+        #エラー吐いたらやりなおし
+        except Exception:
+            pass
+
+    for t in UserTweet:
         #本人以外へのリプを取得
         if not t.in_reply_to_status_id == None and not t.in_reply_to_screen_name == t.user.screen_name:
             #リンク付きツイートはリンク・メンションを削除
